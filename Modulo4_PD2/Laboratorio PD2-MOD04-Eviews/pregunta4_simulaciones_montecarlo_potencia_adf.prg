@@ -1,0 +1,68 @@
+' Pregunta 4 - PD2
+' Econometria Intermedia - Modulo4 (2018-1)
+' Maestría en Economía PUCP
+' JP: Carlos Rodriguez / Martín Villarán
+
+
+' Creamos un workfile
+
+
+wf create u 1000
+
+
+!t=100						 ' Modificar el Numero de Replicaciones (sample size: 200, 100, 50, 25)
+	
+!c=0.5 						' Intercepto comun para las 4 series
+for !i=1 to !t
+
+	smpl @first @first
+	series w{!i}=!c
+	series x{!i}=!c
+	series y{!i}=!c
+	series z{!i}=!c
+	
+	smpl 2 @last
+	series w{!i}=!c+0.002*@trend+0.85*w{!i}(-1)+nrnd
+	series x{!i}=!c+0.002*@trend+0.90*x{!i}(-1)+nrnd
+	series y{!i}=!c+0.002*@trend+0.95*y{!i}(-1)+nrnd
+	series z{!i}=!c+0.002*@trend+0.99*z{!i}(-1)+nrnd
+	
+
+
+	smpl @first @last
+	freeze(tabla_w{!i}) w{!i}.uroot(adf,const,trend, info=sic)
+	freeze(tabla_x{!i}) x{!i}.uroot(adf,const,trend, info=sic)
+	freeze(tabla_y{!i}) y{!i}.uroot(adf,const,trend, info=sic)
+	freeze(tabla_z{!i}) z{!i}.uroot(adf,const,trend, info=sic)
+
+next
+
+
+' Creamos una tabla nueva para guardar los t.stat y c.v de cada serie simulada
+
+table(!t,2) box_w   
+table(!t,2) box_x   
+table(!t,2) box_y  
+table(!t,2) box_z   
+
+
+for !i=1 to !t
+
+	box_w(!i,1)=@val(tabla_w{!i}(7,4))
+	box_w(!i,2)=@val(tabla_w{!i}(9,4))
+
+	box_x(!i,1)=@val(tabla_x{!i}(7,4))
+	box_x(!i,2)=@val(tabla_x{!i}(9,4))
+
+	box_y(!i,1)=@val(tabla_y{!i}(7,4))
+	box_y(!i,2)=@val(tabla_y{!i}(9,4))
+
+	box_z(!i,1)=@val(tabla_z{!i}(7,4))
+	box_z(!i,2)=@val(tabla_z{!i}(9,4))
+
+next
+
+'d tabl*
+'d y* x* z* w*
+
+
