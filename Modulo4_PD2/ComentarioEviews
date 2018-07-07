@@ -1,0 +1,10 @@
+Especificaciones para R.U en Eviews
+
+'TEST DE RAIZ UNITARIA
+'Aplicaremos 4 tipos de test (adf, ers, dfgls, pp) para cada una de las 4 series AR(1)
+'Especificamos las opciones "trend" y "maic". La primera para asumir que las series tienen un componente tendencial. La segunda para estimar los rezagos optimos necesarios para los test de r.u. a traves del criterio modified aic
+for %test adf ers dfgls pp
+	for %b 99 98 85 75
+	freeze(urt_{%test}_s_{%b})s_{%b}.uroot({%test}, trend, info=maic)
+	next
+next
